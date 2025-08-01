@@ -1,0 +1,2 @@
+How to use .env to keep sensitive information. Please refer to the following.
+https://medium.com/@jayodyanandasena/how-to-securely-manage-connection-strings-in-asp-net-core-net-6-7-8-using-env-9213f767d4be
