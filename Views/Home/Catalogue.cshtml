@@ -1,0 +1,33 @@
+@model IEnumerable<NewBookish.Models.Entities.Book>
+@{
+    ViewData["Title"] = "Catalogue";
+}
+<h1>@ViewData["Title"]</h1>
+
+@if (Model != null && Model.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>No. of Copies</th>
+                <th>Available Copies</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.NoOfCopies</td>
+                    <td>@book.AvailableCopies</td>
+                </tr>
+            }
+        </tbody>
+    </table> 
+}
+else{
+    <p>No books available.</p>
+}

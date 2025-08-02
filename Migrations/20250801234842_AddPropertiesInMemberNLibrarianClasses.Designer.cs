@@ -9,14 +9,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Bookish.Migrations
+namespace NewBookish.Migrations
 {
     [DbContext(typeof(BookishContext))]
     [Migration("20250801234842_AddPropertiesInMemberNLibrarianClasses")]
     partial class AddPropertiesInMemberNLibrarianClasses
     {
         /// <inheritdoc />
-        protected void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

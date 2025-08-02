@@ -26,6 +26,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /Users/winniekwok/IdeaProjects/TechSwitch/NewBookish
 build_property._RazorSourceGeneratorDebug = 
 
+[/Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/Views/Home/Catalogue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9DYXRhbG9ndWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

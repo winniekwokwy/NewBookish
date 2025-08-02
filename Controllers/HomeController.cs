@@ -32,6 +32,11 @@ namespace NewBookish.Controllers
             return View();
         }
 
+        public IActionResult Catalogue()
+        {
+            return View(_dbContext.Books);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

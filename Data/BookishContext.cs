@@ -7,7 +7,7 @@ namespace NewBookish.Data
     public class BookishContext : DbContext
     {
         // Put all the tables you want in your database here
-        public DbSet<Book> Catalogue { get; set; }
+        public DbSet<Book> Books { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Librarian> Librarians { get; set; }
 
