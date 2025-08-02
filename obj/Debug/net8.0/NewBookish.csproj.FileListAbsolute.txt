@@ -134,3 +134,5 @@
 /Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/obj/Debug/net8.0/ref/NewBookish.dll
 /Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/bin/Debug/net8.0/DotNetEnv.dll
 /Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/bin/Debug/net8.0/Sprache.dll
+/Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/obj/Debug/net8.0/NewBookish.sourcelink.json
+/Users/winniekwok/IdeaProjects/TechSwitch/NewBookish/bin/Debug/net8.0/Bogus.dll

@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using NewBookish.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<BookishContext>();
+builder.Services.AddTransient<DataSeeder>();
 
 var app = builder.Build();
 
@@ -23,5 +28,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    seeder.Seed();
+}
 
 app.Run();
