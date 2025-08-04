@@ -1,4 +1,5 @@
 namespace NewBookish.Models.Entities;
+
 public class Book
 {
     public int Id { get; set; }
@@ -9,6 +10,6 @@ public class Book
 
     public required int AvailableCopies { get; set; }
 
-    public List<Member> Borrowers { get; set; } = new List<Member>();
+    public List<Member> Borrowers { get; set; } = [];
 
 }

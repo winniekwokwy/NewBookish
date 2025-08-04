@@ -32,11 +32,26 @@ namespace NewBookish.Controllers
             return View();
         }
 
-        public IActionResult Catalogue()
+        public IActionResult Catalogue(string searchTitle, string searchAuthor)
         {
-            return View(_dbContext.Books);
-        }
+            if (_dbContext.Books == null)
+            {
+                return View("Entity set 'BookishContext.Books'  is null.");
+            }
 
+            var books = from b in _dbContext.Books
+                        select b;
+
+            if (!string.IsNullOrEmpty(searchTitle))
+            {
+                books = books.Where(s => s.Title!.ToLower().Contains(searchTitle.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchAuthor))
+            {
+                books = books.Where(s => s.Author!.ToLower().Contains(searchAuthor.ToLower()));
+            }
+            return View(books.ToList());
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

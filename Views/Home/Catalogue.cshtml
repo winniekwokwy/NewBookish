@@ -1,8 +1,20 @@
 @model IEnumerable<NewBookish.Models.Entities.Book>
+
 @{
-    ViewData["Title"] = "Catalogue";
+    ViewBag.Title = "Catalogue";
 }
-<h1>@ViewData["Title"]</h1>
+
+<link href="../Content/StyleSheet.css" rel="stylesheet" />
+<h2>Search Book</h2>
+
+<form asp-controller="Home" asp-action="Catalogue">
+    <p>
+        <label>Search By Title: <input type="text" name="SearchTitle" /></label>
+        <label>Search By Author: <input type="text" name="SearchAuthor" /></label>
+        <input type="submit" value="Filter" />
+        <input type="submit" value="Clear Filter" />
+    </p>
+</form>
 
 @if (Model != null && Model.Any())
 {
