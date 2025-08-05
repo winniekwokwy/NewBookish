@@ -27,11 +27,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{Id?}");
+    pattern: "{controller=Home}/{action=Index}/{searchTitle?}/{searchAuthor?}");
 
-app.MapControllerRoute(
-    name: "Catalogue",
-    pattern: "{controller=Home}/{action=Catalogue}/{searchTitle?}/{searchAuthor?}");
 
 using (var scope = app.Services.CreateScope())
 {
