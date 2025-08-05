@@ -32,15 +32,19 @@ namespace NewBookish.Controllers
             return View();
         }
 
-        public IActionResult Catalogue(string searchTitle, string searchAuthor)
+        public IActionResult Catalogue(string sortOrder, string searchTitle, string searchAuthor)
         {
             if (_dbContext.Books == null)
             {
                 return View("Entity set 'BookishContext.Books'  is null.");
             }
 
+            ViewBag.TitleSortParm = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewBag.AuthorSortParm = sortOrder == "Author" ? "author_desc" : "Author";
+
             var books = from b in _dbContext.Books
                         select b;
+
 
             if (!string.IsNullOrEmpty(searchTitle))
             {
@@ -50,6 +54,23 @@ namespace NewBookish.Controllers
             {
                 books = books.Where(s => s.Author!.ToLower().Contains(searchAuthor.ToLower()));
             }
+
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    books = books.OrderByDescending(s => s.Title);
+                    break;
+                case "Author":
+                    books = books.OrderBy(s => s.Author);
+                    break;
+                case "author_desc":
+                    books = books.OrderByDescending(s => s.Author);
+                    break;
+                default:
+                    books = books.OrderBy(s => s.Title);
+                    break;
+            }
+
             return View(books.ToList());
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

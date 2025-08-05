@@ -21,8 +21,14 @@
     <table>
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Author</th>
+                <th>
+                    @Html.ActionLink("Title", "Catalogue", new { sortOrder = ViewBag.TitleSortParm })
+                </th>
+                @* <th>Title</th>
+                <th>Author</th> *@
+                <th>
+                    @Html.ActionLink("Author", "Catalogue", new { sortOrder = ViewBag.AuthorSortParm })
+                </th>
                 <th>No. of Copies</th>
                 <th>Available Copies</th>
             </tr>
