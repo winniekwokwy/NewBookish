@@ -6,7 +6,7 @@
 }
 
 <link href="../Content/StyleSheet.css" rel="stylesheet" />
-<h2>Search Book</h2>
+<h2>Catalogue</h2>
 
 <form asp-controller="Home" asp-action="Index" method="get">
     <p>
@@ -14,63 +14,77 @@
         <label>Search By Author: <input type="text" name="SearchAuthor" value="@ViewData["AuthorFilter"]" /></label>
         <button type="submit" value="Filter" class="button">Filter</button>
         <button type="button" onclick="location.href='@Url.Action("Index", "Home")'" class="button">Clear Filter</button>
-       @*  <input type="submit" value="Clear Filter" asp-action="Index" /> *@
-       @*   <a asp-action="Index">Back to Full List</a>  *@
     </p>
 </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form asp-controller="Home" asp-action="Index" method="post">
+    <p>
+        <label>Title <input type="Text" name="BookTitle" value="@ViewData["BookTitle"]" /></label>
+        <label>Author <input type="Text" name="BookAuthor" value="@ViewData["BookAuthor"]" /></label>
+        <button type="submit" value="Index" class="button">Add Book</button>
+    </p>
+</form>
 
-@if (Model != null && Model.Any())
-{
-    <table class="Books">
-        <thead>
-            <tr>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentTitle"]">Title</a>
-                   @*  @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm }) *@
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["AuthorSortParm"]" asp-route-currentFilter="@ViewData["CurrentAuthor"]">Author</a>
-                    @* @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm }) *@
-                </th>
-                    <th>No. of Copies</th>
-                <th>Available Copies</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var book in Model)
-            {
-                <tr>
-                    <td>@book.Title</td>
-                    <td>@book.Author</td>
-                    <td>@book.NoOfCopies</td>
-                    <td>@book.AvailableCopies</td>
-                </tr>
-            }
-        </tbody>
-    </table> 
-    
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    
-    <a asp-action="Index"
-    asp-route-sortOrder="@ViewData["CurrentSort"]"
-    asp-route-page="@(Model.PageIndex - 1)"
-    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-    class="btn btn-default @prevDisabled">
-        Previous
-    </a>
-    <a asp-action="Index"
-    asp-route-sortOrder="@ViewData["CurrentSort"]"
-    asp-route-page="@(Model.PageIndex + 1)"
-    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-    class="btn btn-default @nextDisabled">
-        Next
-    </a>
+
+@if ((TempData["Error"]?.ToString() ?? null) == "true") {
+    <p>@TempData["Message"]</p>
+    <code>@{TempData["Error"] = "false";}</code>
+    <code>@{TempData["Message"]= "";}</code>
+    <button type="button" onclick="location.href='@Url.Action("Index", "Home")'" class="button">Try Again</button>
 }
-else{
-    <p>No books available.</p>
+else {
+    if (TempData["Message"]!= null) {
+        <p>@TempData["Message"]</p>
+        <code>@{TempData["Error"] = "false";}</code>
+        <code>@{TempData["Message"]= "";}</code>
+    }
+    @if (Model != null && Model.Any())
+    {
+        <table class="Books">
+            <thead>
+                <tr>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentTitle"]">Title</a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["AuthorSortParm"]" asp-route-currentFilter="@ViewData["CurrentAuthor"]">Author</a>
+                    </th>
+                        <th>No. of Copies</th>
+                    <th>Available Copies</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td>@book.Title</td>
+                        <td>@book.Author</td>
+                        <td>@book.NoOfCopies</td>
+                        <td>@book.AvailableCopies</td>
+                    </tr>
+                }
+            </tbody>
+        </table> 
+        
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        
+        <a asp-action="Index"
+        asp-route-sortOrder="@ViewData["CurrentSort"]"
+        asp-route-page="@(Model.PageIndex - 1)"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+        class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+        asp-route-sortOrder="@ViewData["CurrentSort"]"
+        asp-route-page="@(Model.PageIndex + 1)"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+        class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    }
+    else{
+        <p>No books available.</p>
+    }
 }
