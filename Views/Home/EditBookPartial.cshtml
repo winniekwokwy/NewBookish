@@ -1,6 +1,7 @@
 @model NewBookish.Models.Entities.Book
 
 <form asp-action="EditBook" method="post" id="editForm_@Model.Id">
+    @Html.AntiForgeryToken()
     <input type="hidden" name="Id" value="@Model.Id" />
     <div style="display: flex; gap: 10px;">
         <input type="text" name="Title" value="@Model.Title" placeholder="Title" class="form-control" />

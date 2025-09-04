@@ -98,6 +98,7 @@ namespace NewBookish.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Index(string BookTitle, string BookAuthor)
         {
             if (string.IsNullOrEmpty(BookTitle) || string.IsNullOrEmpty(BookAuthor))
@@ -121,6 +122,7 @@ namespace NewBookish.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult Delete(int id)
         {
             var book = _dbContext.Books.Find(id);
@@ -144,6 +146,7 @@ namespace NewBookish.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Update(Book model)
         {
             if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Author))

@@ -2,11 +2,16 @@ $(document).ready(function () {
     // DELETE logic
     $(document).on('click', '.delete-btn', function () {
         var bookId = $(this).data('id');
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
         if (confirm("Are you sure you want to delete this book?")) {
             $.ajax({
                 url: '/Home/Delete',
                 type: 'POST',
                 data: { id: bookId },
+                headers: {
+                    'RequestVerificationToken': token
+                },
                 success: function (response) {
                     if (response.success) {
                         $('.delete-btn[data-id="' + bookId + '"]').closest('tr').remove();
@@ -94,13 +99,15 @@ $(document).ready(function () {
     });
 
     // Validate the form before submission
+    
     $(document).on('submit', 'form[id^="editForm_"]', function (e) {
         e.preventDefault(); // Prevent the default form submission behavior
     
         var form = $(this);
         var isValid = true;
         const error = document.getElementById("Error");
-    
+        var token = form.find('input[name="__RequestVerificationToken"]').val();
+        
         // Validate all input fields in the form
         form.find('input').each(function () {
             var input = $(this);
@@ -115,20 +122,28 @@ $(document).ready(function () {
             var formData = form.serialize(); // Serialize the form data
 
             // Send the AJAX request to update the book
-            $.post('/Home/Update', formData, function (response) {
-                if (response.success) {
-                    // Update the table row with the new data
-                    var row = $('#row_' + bookId);
-                    row.find('td:nth-child(1)').text(response.data.title);
-                    row.find('td:nth-child(2)').text(response.data.author);
-                    row.find('td:nth-child(3)').text(response.data.noOfCopies);
-                    row.find('td:nth-child(4)').text(response.data.availableCopies);
-    
-                    // Hide the edit row and show the updated original row
-                    $('#editRow_' + bookId).hide();
-                    row.show();
-                } else {
-                    error.textContent = response.message;
+            $.ajax({
+                url: '/Home/Update',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': token // Include the anti-forgery token
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Update the table row with the new data
+                        var row = $('#row_' + bookId);
+                        row.find('td:nth-child(1)').text(response.data.title);
+                        row.find('td:nth-child(2)').text(response.data.author);
+                        row.find('td:nth-child(3)').text(response.data.noOfCopies);
+                        row.find('td:nth-child(4)').text(response.data.availableCopies);
+        
+                        // Hide the edit row and show the updated original row
+                        $('#editRow_' + bookId).hide();
+                        row.show();
+                    } else {
+                        error.textContent = response.message;
+                    }
                 }
             });
         } else{

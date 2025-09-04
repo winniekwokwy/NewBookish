@@ -13,6 +13,7 @@
 <h2>Catalogue</h2>
 
 <form asp-controller="Home" asp-action="Index" method="get">
+    @Html.AntiForgeryToken()
     <p>
         <label>Search By Title: <input type="text" name="SearchTitle" value="@ViewData["TitleFilter"]" /></label>
         <label>Search By Author: <input type="text" name="SearchAuthor" value="@ViewData["AuthorFilter"]" /></label>
@@ -22,6 +23,7 @@
 </form>
 
 <form asp-controller="Home" asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
     <p>
         <label>Title <input type="Text" name="BookTitle" value="@ViewData["BookTitle"]" /></label>
         <label>Author <input type="Text" name="BookAuthor" value="@ViewData["BookAuthor"]" /></label>
