@@ -20,11 +20,6 @@ namespace NewBookish.Controllers
             _dbContext = dbContext;
         }
 
-        /*         public IActionResult Index()
-                {
-                    return View();
-                } */
-
         public IActionResult Privacy()
         {
             return View();
@@ -170,7 +165,7 @@ namespace NewBookish.Controllers
             {
                 return Json(new { success = false, message = "A book with the same title and author already exists." });
             }
-            
+
             // Update the book details
             book.Title = model.Title;
             book.Author = model.Author;
@@ -193,40 +188,6 @@ namespace NewBookish.Controllers
             });
         }
 
-/*         [HttpPost, ActionName("Edit")]
-        public async Task<IActionResult> EditBook(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bookToUpdate = await _dbContext.Books
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (bookToUpdate == null)
-            {
-                return NotFound();
-            }
-            if (await TryUpdateModelAsync<Book>(bookToUpdate,
-                "",
-                c => c.Title, c => c.Author, c => c.NoOfCopies, c => c.AvailableCopies))
-            {
-                try
-                {
-                    await _dbContext.SaveChangesAsync();
-                }
-                catch (DbUpdateException */ /* ex *//* )
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(bookToUpdate);
-        } */
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -7,7 +7,6 @@
     int bookId = 0;
 }
 
-@* <link href="../Content/StyleSheet.css" rel="stylesheet" /> *@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/Scripts/LibraryCatalogue.js"></script>
 
@@ -27,12 +26,8 @@
         <label>Title <input type="Text" name="BookTitle" value="@ViewData["BookTitle"]" /></label>
         <label>Author <input type="Text" name="BookAuthor" value="@ViewData["BookAuthor"]" /></label>
         <button type="submit" value="Index" class="button">Add Book</button>
-        @* <input type="button" class="btn btn-primary" id="btnAddProd" value="Add Book" class="button"></> *@
     </p>
 </form>
-@* <div class="mtop20">
-    <input type="button" class="btn btn-primary" id="btnAddProd" value="Add New Book" onclick="AddNewBook();" />
-</div> *@
 
 @if ((TempData["Error"]?.ToString() ?? null) == "true") {
     <p>@TempData["Message"]</p>
@@ -51,7 +46,7 @@ else {
 <div class="mtop20">
             @if (Model.Count() > 0)
             {
-                <table id="tblProdinfo" class="table table-bordered table-hover">
+                <table id="Catalogue" class="table table-bordered table-hover">
                     <thead>
                         <tr>
                             <th id="title">
@@ -75,17 +70,6 @@ else {
                                 <td >@Model[i].Author</td>
                                 <td >@Model[i].NoOfCopies</td>
                                 <td >@Model[i].AvailableCopies</td>
-@*                                 <td>
-                                    <input type="button" class="btn btn-primary" id="btnEditProd_@Model[i].Id.ToString()" value="Edit" onclick="editBookData(@Model[i].Id.ToString())" />
-
-                                    <input type="button" class="btn btn-primary" id="btnUpdateProd_@Model[i].Id.ToString()" value="Update" style="display:none;" onclick="saveBookData(@Model[i].Id.ToString(),@Model[i].Id.ToString())" />
-
-                                    <input type="button" class="btn btn-primary" id="btnDeleteProd_@Model[i].Id.ToString()" value="Delete" onclick="deleteBookData(@Model[i].Id.ToString(),@Model[i].Id.ToString())" />
-
-                                    <input type="button" class="btn btn-primary" value="Cancel" onclick="removeBookData(@Model[i].Id)" style="display:none;" id="btnCancelProd_@Model[i].Id.ToString()" />
-                                    
-                                
-                                </td> *@
                                 <td>
                                     <button class="edit-btn" data-id="@bookId">Edit</button>
                                     <button class="delete-btn" data-id="@bookId">Delete</button>
