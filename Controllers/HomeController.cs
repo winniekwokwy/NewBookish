@@ -20,10 +20,10 @@ namespace NewBookish.Controllers
             _dbContext = dbContext;
         }
 
-/*         public IActionResult Index()
-        {
-            return View();
-        } */
+        /*         public IActionResult Index()
+                {
+                    return View();
+                } */
 
         public IActionResult Privacy()
         {
@@ -65,7 +65,7 @@ namespace NewBookish.Controllers
             {
                 searchTitle = currentTitle;
                 searchAuthor = currentAuthor;
-            } 
+            }
 
             ViewData["TitleFilter"] = searchTitle;
             ViewData["AuthorFilter"] = searchAuthor;
@@ -86,23 +86,23 @@ namespace NewBookish.Controllers
             switch (sortOrder)
             {
                 case "title_desc":
-                    books = books.OrderByDescending(s => s.Title);
+                    books = books.OrderByDescending(s => s.Title.ToLower());
                     break;
                 case "Author":
-                    books = books.OrderBy(s => s.Author);
+                    books = books.OrderBy(s => s.Author.ToLower());
                     break;
                 case "author_desc":
-                    books = books.OrderByDescending(s => s.Author);
+                    books = books.OrderByDescending(s => s.Author.ToLower());
                     break;
                 default:
-                    books = books.OrderBy(s => s.Title);
+                    books = books.OrderBy(s => s.Title.ToLower());
                     break;
             }
-            
+
             return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), page ?? 1, pageSize));
         }
 
-        [HttpPost] 
+        [HttpPost]
         public IActionResult Index(string BookTitle, string BookAuthor)
         {
             if (string.IsNullOrEmpty(BookTitle) || string.IsNullOrEmpty(BookAuthor))
@@ -111,7 +111,7 @@ namespace NewBookish.Controllers
                 TempData["Message"] = "Book information is not provided. Please try again.";
                 return View();
             }
-            var book = _dbContext.Books.FirstOrDefault(b => b.Title == BookTitle && b.Author == BookAuthor);
+            var book = _dbContext.Books.FirstOrDefault(b => b.Title.ToLower() == BookTitle.ToLower() && b.Author.ToLower() == BookAuthor.ToLower());
             if (book != null)
             {
                 TempData["Error"] = "true";
@@ -125,6 +125,108 @@ namespace NewBookish.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            var book = _dbContext.Books.Find(id);
+            if (book != null)
+            {
+                _dbContext.Books.Remove(book);
+                _dbContext.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult EditPartial(int id)
+        {
+            var book = _dbContext.Books.Find(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return PartialView("EditBookPartial", book);
+        }
+
+        [HttpPost]
+        public ActionResult Update(Book model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Author))
+            {
+                return Json(new { success = false, message = "Title and Author are required." });
+            }
+
+            var book = _dbContext.Books.Find(model.Id);
+            if (book == null)
+            {
+                return Json(new { success = false, message = "Book not found." });
+            }
+
+            var duplicateBook = _dbContext.Books.FirstOrDefault
+            (b => b.Title.ToLower() == book.Title.ToLower() &&
+            b.Author.ToLower() == book.Author.ToLower() &&
+            b.Id != book.Id);
+            if (duplicateBook != null)
+            {
+                return Json(new { success = false, message = "A book with the same title and author already exists." });
+            }
+            
+            // Update the book details
+            book.Title = model.Title;
+            book.Author = model.Author;
+            book.NoOfCopies = model.NoOfCopies;
+            book.AvailableCopies = model.AvailableCopies;
+
+            _dbContext.SaveChanges();
+
+            // Return the updated book data
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    title = book.Title,
+                    author = book.Author,
+                    noOfCopies = book.NoOfCopies,
+                    availableCopies = book.AvailableCopies
+                }
+            });
+        }
+
+/*         [HttpPost, ActionName("Edit")]
+        public async Task<IActionResult> EditBook(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bookToUpdate = await _dbContext.Books
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (bookToUpdate == null)
+            {
+                return NotFound();
+            }
+            if (await TryUpdateModelAsync<Book>(bookToUpdate,
+                "",
+                c => c.Title, c => c.Author, c => c.NoOfCopies, c => c.AvailableCopies))
+            {
+                try
+                {
+                    await _dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateException */ /* ex *//* )
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(bookToUpdate);
+        } */
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

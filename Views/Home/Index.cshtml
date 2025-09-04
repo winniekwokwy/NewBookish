@@ -1,11 +1,16 @@
-﻿@using NewBookish.Helpers
+@using NewBookish.Helpers
 @model PaginatedList<NewBookish.Models.Entities.Book>
 
 @{
     ViewData["Title"] = "Catalogue";
+    Layout = null;
+    int bookId = 0;
 }
 
-<link href="../Content/StyleSheet.css" rel="stylesheet" />
+@* <link href="../Content/StyleSheet.css" rel="stylesheet" /> *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/LibraryCatalogue.js"></script>
+
 <h2>Catalogue</h2>
 
 <form asp-controller="Home" asp-action="Index" method="get">
@@ -22,9 +27,12 @@
         <label>Title <input type="Text" name="BookTitle" value="@ViewData["BookTitle"]" /></label>
         <label>Author <input type="Text" name="BookAuthor" value="@ViewData["BookAuthor"]" /></label>
         <button type="submit" value="Index" class="button">Add Book</button>
+        @* <input type="button" class="btn btn-primary" id="btnAddProd" value="Add Book" class="button"></> *@
     </p>
 </form>
-
+@* <div class="mtop20">
+    <input type="button" class="btn btn-primary" id="btnAddProd" value="Add New Book" onclick="AddNewBook();" />
+</div> *@
 
 @if ((TempData["Error"]?.ToString() ?? null) == "true") {
     <p>@TempData["Message"]</p>
@@ -38,53 +46,94 @@ else {
         <code>@{TempData["Error"] = "false";}</code>
         <code>@{TempData["Message"]= "";}</code>
     }
-    @if (Model != null && Model.Any())
-    {
-        <table class="Books">
-            <thead>
-                <tr>
-                    <th>
-                        <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentTitle"]">Title</a>
-                    </th>
-                    <th>
-                        <a asp-action="Index" asp-route-sortOrder="@ViewData["AuthorSortParm"]" asp-route-currentFilter="@ViewData["CurrentAuthor"]">Author</a>
-                    </th>
-                        <th>No. of Copies</th>
-                    <th>Available Copies</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var book in Model)
+
+
+<div class="mtop20">
+            @if (Model.Count() > 0)
+            {
+                <table id="tblProdinfo" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th id="title">
+                                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentTitle"]">Title</a>
+                            </th>
+                            <th id="author" class="hideCol hideHideCol_2">
+                                <a asp-action="Index" asp-route-sortOrder="@ViewData["AuthorSortParm"]" asp-route-currentFilter="@ViewData["CurrentAuthor"]">Author</a>
+                            </th>
+                            <th id="TotalCopies" class="hideCol hideHideCol_3">No. of Copies</th>
+                            <th id="AvailableCopies" class="hideCol hideHideCol_4">Available Copies</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>  
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        bookId = Model[i].Id;
+                      
+                            <tr id="row_@bookId">
+                                <td >@Model[i].Title</td>
+                                <td >@Model[i].Author</td>
+                                <td >@Model[i].NoOfCopies</td>
+                                <td >@Model[i].AvailableCopies</td>
+@*                                 <td>
+                                    <input type="button" class="btn btn-primary" id="btnEditProd_@Model[i].Id.ToString()" value="Edit" onclick="editBookData(@Model[i].Id.ToString())" />
+
+                                    <input type="button" class="btn btn-primary" id="btnUpdateProd_@Model[i].Id.ToString()" value="Update" style="display:none;" onclick="saveBookData(@Model[i].Id.ToString(),@Model[i].Id.ToString())" />
+
+                                    <input type="button" class="btn btn-primary" id="btnDeleteProd_@Model[i].Id.ToString()" value="Delete" onclick="deleteBookData(@Model[i].Id.ToString(),@Model[i].Id.ToString())" />
+
+                                    <input type="button" class="btn btn-primary" value="Cancel" onclick="removeBookData(@Model[i].Id)" style="display:none;" id="btnCancelProd_@Model[i].Id.ToString()" />
+                                    
+                                
+                                </td> *@
+                                <td>
+                                    <button class="edit-btn" data-id="@bookId">Edit</button>
+                                    <button class="delete-btn" data-id="@bookId">Delete</button>
+                                </td>
+                            </tr>
+                            <tr id="editRow_@bookId" style="display: none;">
+                                <td colspan="5">    
+                                    <div id="editBookContainer"></div>            
+                                </td>
+                            </tr>
+                    }
+                    </tbody> 
+                </table>
+                <span id="Error" class="text-danger"></span>
+                <br>
+                @if (Model.HasPreviousPage)
                 {
-                    <tr>
-                        <td>@book.Title</td>
-                        <td>@book.Author</td>
-                        <td>@book.NoOfCopies</td>
-                        <td>@book.AvailableCopies</td>
-                    </tr>
+                    <a asp-action="Index"
+                    asp-route-sortOrder="@ViewData["CurrentSort"]"
+                    asp-route-page="@(Model.PageIndex - 1)"
+                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                    class="btn btn-default">
+                        Previous
+                    </a>
                 }
-            </tbody>
-        </table> 
-        
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-        
-        <a asp-action="Index"
-        asp-route-sortOrder="@ViewData["CurrentSort"]"
-        asp-route-page="@(Model.PageIndex - 1)"
-        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-        class="btn btn-default @prevDisabled">
-            Previous
-        </a>
-        <a asp-action="Index"
-        asp-route-sortOrder="@ViewData["CurrentSort"]"
-        asp-route-page="@(Model.PageIndex + 1)"
-        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-        class="btn btn-default @nextDisabled">
-            Next
-        </a>
-    }
-    else{
-        <p>No books available.</p>
-    }
+                else
+                {
+                    <span class="btn btn-default disabled">Previous</span>
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <a asp-action="Index"
+                    asp-route-sortOrder="@ViewData["CurrentSort"]"
+                    asp-route-page="@(Model.PageIndex + 1)"
+                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                    class="btn btn-default">
+                        Next
+                    </a>
+                }
+                else
+                {
+                    <span class="btn btn-default disabled">Next</span>
+                }
+            }
+            else
+            {
+                <p>No Books available.</p>
+            }
+</div>
 }
