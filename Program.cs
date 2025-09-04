@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NewBookish.Data;
+using Microsoft.AspNetCore.Antiforgery;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +23,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    if (string.Equals(context.Request.Method, "POST", StringComparison.OrdinalIgnoreCase))
+    {
+        var antiforgery = context.RequestServices.GetRequiredService<IAntiforgery>();
+        await antiforgery.ValidateRequestAsync(context);
+    }
+    await next();
+});
 
 app.MapControllerRoute(
     name: "default",

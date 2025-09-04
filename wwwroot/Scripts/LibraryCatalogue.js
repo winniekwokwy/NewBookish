@@ -26,6 +26,7 @@ $(document).ready(function () {
         var totalCopies = form.find('input[name="NoOfCopies"]').val(); // Get TotalCopies value
         var availableCopies = form.find('input[name="AvailableCopies"]').val(); // Get AvailableCopies value
         const error = document.getElementById("Error");
+        error.textContent = "";
     
         // Check if the field is empty
         if (value === '') {
@@ -90,6 +91,8 @@ $(document).ready(function () {
         var bookId = $(this).data('id');
         var originalRow = $('#row_' + bookId); // The original row
         var editRow = $('#editRow_' + bookId); // The edit row
+        const error = document.getElementById("Error");
+        error.textContent = "";
 
         // Clear the input fields in the edit form
         editRow.find('form')[0].reset(); // Reset the form fields
@@ -99,15 +102,14 @@ $(document).ready(function () {
     });
 
     // Validate the form before submission
-    
     $(document).on('submit', 'form[id^="editForm_"]', function (e) {
         e.preventDefault(); // Prevent the default form submission behavior
     
         var form = $(this);
         var isValid = true;
         const error = document.getElementById("Error");
-        var token = form.find('input[name="__RequestVerificationToken"]').val();
-        
+        var token = $('input[name="__RequestVerificationToken"]').val(); // Extract the anti-forgery token
+    
         // Validate all input fields in the form
         form.find('input').each(function () {
             var input = $(this);
