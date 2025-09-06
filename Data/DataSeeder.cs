@@ -14,6 +14,7 @@ public class DataSeeder
     public void Seed()
     {
         SeedBooks();
+        SeedMember();
     }
 
     public void SeedBooks()
@@ -29,6 +30,23 @@ public class DataSeeder
             foreach (var book in faker)
             {
                 _context.Books.Add(book);
+            }
+            _context.SaveChanges();
+        }
+    }
+
+    public void SeedMember()
+    {
+        if (!_context.Members.Any())
+        {
+            var faker = new Faker<Member>("en")
+                        .RuleFor(d => d.Name, f => f.Person.FullName)
+                        .RuleFor(d => d.Email, f => f.Person.Email)
+                        .RuleFor(d => d.PhoneNumber, f => f.Person.Phone)
+                        .Generate(5);
+            foreach (var member in faker)
+            {
+                _context.Members.Add(member);
             }
             _context.SaveChanges();
         }

@@ -1,0 +1,128 @@
+@using NewBookish.Helpers
+@model PaginatedList<NewBookish.Models.Entities.Member>
+
+@{
+    ViewData["Title"] = "Members";
+    //Layout = null;
+    int memberId = 0;
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/LibraryCatalogue.js"></script>
+
+<h2>Members</h2>
+
+<form asp-controller="Member" asp-action="MemberManagement" method="get">
+    @Html.AntiForgeryToken()
+    <p>
+        <label>Search By ID: <input type="text" name="SearchID" value="@ViewData["IDFilter"]" /></label>
+        <label>Search By Name: <input type="text" name="SearchName" value="@ViewData["NameFilter"]" /></label>
+        <label>Search By Email: <input type="text" name="SearchEmail" value="@ViewData["EmailFilter"]" /></label>
+        <label>Search By Phone number: <input type="text" name="SearchPhoneNumber" value="@ViewData["PhoneNumberFilter"]" /></label>
+        <button type="submit" value="Filter" class="button">Filter</button>
+        <button type="button" onclick="location.href='@Url.Action("MemberManagement", "Member")'" class="button">Clear Filter</button>
+    </p>
+</form>
+
+@* <form asp-controller="Home" asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+    <p>
+        <label>Title <input type="Text" name="BookTitle" value="@ViewData["BookTitle"]" /></label>
+        <label>Author <input type="Text" name="BookAuthor" value="@ViewData["BookAuthor"]" /></label>
+        <button type="submit" value="Index" class="button">Add Book</button>
+    </p>
+</form>
+
+@if ((TempData["Error"]?.ToString() ?? null) == "true") {
+    <p>@TempData["Message"]</p>
+    <code>@{TempData["Error"] = "false";}</code>
+    <code>@{TempData["Message"]= "";}</code>
+    <button type="button" onclick="location.href='@Url.Action("Index", "Home")'" class="button">Try Again</button>
+}
+else {
+    if (TempData["Message"]!= null) {
+        <p>@TempData["Message"]</p>
+        <code>@{TempData["Error"] = "false";}</code>
+        <code>@{TempData["Message"]= "";}</code>
+    }
+*@
+
+<div class="mtop20">
+    @if (Model.Count() > 0)
+    {
+        <table id="Member" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th id="ID">
+                        <a asp-action="MemberManagement" asp-route-sortOrder="@ViewData["IDSortParm"]" asp-route-currentFilter="@ViewData["CurrentID"]">ID</a>
+                    </th>
+                    <th id="Name">
+                        <a asp-action="MemberManagement" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentName"]">Name</a>
+                    </th>
+                    <th id="Email" class="hideCol hideHideCol_2">
+                        <a asp-action="MemberManagement" asp-route-sortOrder="@ViewData["EmailSortParm"]" asp-route-currentFilter="@ViewData["CurrentEmail"]">Email</a>
+                    </th>
+                    <th id="PhoneNo" class="hideCol hideHideCol_3">Phone Number</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>  
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                memberId = Model[i].MemberId;
+                
+                    <tr id="row_@memberId">
+                        <td>@Model[i].MemberId</td>
+                        <td >@Model[i].Name</td>
+                        <td >@Model[i].Email</td>
+                        <td >@Model[i].PhoneNumber</td>
+                        <td>
+                            <button class="edit-btn" data-id="@memberId">Edit</button>
+                            <button class="delete-btn" data-id="@memberId">Delete</button>
+                        </td>
+                    </tr>
+@*                             <tr id="editRow_@memberId" style="display: none;">
+                        <td colspan="5">    
+                            <div id="editBookContainer"></div>            
+                        </td>
+                    </tr> *@
+            }
+            </tbody> 
+        </table>
+        <span id="Error" class="text-danger"></span>
+        <br>
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index"
+            asp-route-sortOrder="@ViewData["CurrentSort"]"
+            asp-route-page="@(Model.PageIndex - 1)"
+            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+            class="btn btn-default">
+                Previous
+            </a>
+        }
+        else
+        {
+            <span class="btn btn-default disabled">Previous</span>
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index"
+            asp-route-sortOrder="@ViewData["CurrentSort"]"
+            asp-route-page="@(Model.PageIndex + 1)"
+            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+            class="btn btn-default">
+                Next
+            </a>
+        }
+        else
+        {
+            <span class="btn btn-default disabled">Next</span>
+        }
+    }
+    else
+    {
+        <p>No Members available.</p>
+    }
+</div>
